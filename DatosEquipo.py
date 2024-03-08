@@ -11,6 +11,14 @@ def getPuntos(equipo, response):
 
         ciudad = 'L.A. Lakers'
 
+    elif equipo == 'Golden State Warriors':
+    
+        ciudad = 'Golden St.'
+    
+    elif len(equipo.split()) > 2:
+
+        ciudad = equipo.split()[0] + equipo.split()[1]
+
     else:
 
         ciudad = equipo.split()[0]
