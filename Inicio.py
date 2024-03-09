@@ -1,23 +1,9 @@
 import DatosEquipo as Datos
 
-"""
-
-    RECORD CASA Y VISITA
-    RATING OFENSIVO Y DEFENSIVO
-    PUNTOS A FAVOR, EN CONTRA Y DIFERENCIAL
-    RESULTADOS ULT. 5 ENCUENTROS
-    RESULTADOS DE ANTERIORES ENCUENTROS CON EL RIVAL
-    RESULTADOS ULT. 5 ENCUENTROS DEPENDIENDO C/V
-
-"""
-
 def getDatosEquipos(equipoCasa, equipoVisita):
 
     datosEquipoCasa = Datos.setDatosEquipo(equipoCasa, equipoVisita, 'Casa')
     datosEquipoVisita = Datos.setDatosEquipo(equipoVisita, equipoCasa, 'Visitante')
-
-    print(datosEquipoCasa)
-    print(datosEquipoVisita)
     
     return datosEquipoCasa, datosEquipoVisita
 
@@ -27,7 +13,9 @@ def calculoEncuentros(resultadoEquipo):
 
     victorias = 0
     derrotas = 0
-    
+
+    porcentajeVictorias = 0
+
     rachaVictoria = 0
     rachaDerrota = 0
     rachaActual = 0
@@ -75,7 +63,10 @@ def calculoEncuentros(resultadoEquipo):
 
                 rachaActual = -1
 
-    porcentajeVictorias = (victorias * 100) / (victorias + derrotas)
+
+    if victorias + derrotas > 0:
+    
+        porcentajeVictorias = (victorias * 100) / (victorias + derrotas)
 
     return porcentajeVictorias, rachaActual, rachaVictoria, rachaDerrota
 
@@ -103,6 +94,10 @@ def calculoPorcentajeVictoria(recordEquipo):
 #==========================================================#
 
 def diferencialEstadistica(estadisticaCasa, estadisticaVisita):
+    
+    if len(estadisticaCasa) <= 0 or len(estadisticaVisita) <= 0:
+
+        return (0, 0)
 
     casaOfensiva = float(estadisticaCasa[0])
     casaDefensiva = float(estadisticaCasa[1])
@@ -163,20 +158,165 @@ def diferencialEstadistica(estadisticaCasa, estadisticaVisita):
 
     if casa > visita:
 
-        return 'Casa'
+        casa += 2
     
     elif casa < visita:
 
-        return 'Visitante'
+        visita += 2
+
+    return (casa, visita)
     
 #==========================================================#
 
-datosEquipos = getDatosEquipos('Los Angeles Clippers', 'Los Angeles Lakers')
+def diferencialVictoria(victoriasCasa, victoriasVisita):
 
-#print(calculoPorcentajeVictoria(datosEquipos[0][0][0][0]))
-#print(calculoPorcentajeVictoria(datosEquipos[0][0][0][1]))
-#print(diferencialEstadistica(datosEquipos[0][0][1], datosEquipos[1][0][1]))
-#print(diferencialEstadistica(datosEquipos[0][0][2], datosEquipos[1][0][2]))
-#print(calculoEncuentros(datosEquipos[1][0][3]))
-#print(calculoEncuentros(datosEquipos[1][0][4]))
-#print(calculoEncuentros(datosEquipos[1][0][5]))
+    if victoriasCasa > victoriasVisita:
+
+        return (1, 0)
+
+    elif victoriasCasa < victoriasVisita:
+
+        return (0, 1)
+    
+    else:
+
+        return (1, 1)
+
+#==========================================================#
+
+def diferencialEncuentros(encuentrosCasa, encuentrosVisita):
+
+    porcentajeCasa = encuentrosCasa[0]
+    rachaActualCasa = encuentrosCasa[1]
+    rachaVictoriaCasa = encuentrosCasa[2]
+    rachaDerrotaCasa = encuentrosCasa[3]
+
+    porcentajeVisita = encuentrosVisita[0]
+    rachaActualVisita = encuentrosVisita[1]
+    rachaVictoriaVisita = encuentrosVisita[2]
+    rachaDerrotaVisita = encuentrosVisita[3]
+
+    casa = 0
+    visita = 0
+
+    if porcentajeCasa > porcentajeVisita:
+
+        casa += 1
+
+    elif porcentajeCasa < porcentajeVisita:
+
+        visita += 1
+
+
+    if rachaActualCasa > 0:
+
+        casa += 1
+
+    else:
+
+        casa -= 1    
+    
+    if rachaActualVisita > 0:
+
+        visita += 1
+
+    else:
+
+        visita -= 1
+
+
+    if rachaActualCasa > rachaActualVisita:
+
+        casa += 2
+
+    elif rachaActualCasa < rachaActualVisita:
+
+        visita += 2
+    
+    if rachaVictoriaCasa > rachaVictoriaVisita:
+
+        casa += 1
+
+    elif rachaVictoriaCasa < rachaVictoriaVisita:
+
+        visita += 1
+
+
+    if rachaDerrotaCasa > rachaDerrotaVisita:
+
+        casa += 1
+
+    elif rachaDerrotaCasa < rachaDerrotaVisita:
+
+        visita += 1
+
+    
+    if casa > visita:
+
+        casa += 2
+    
+    elif casa < visita:
+
+        visita += 2
+
+    return (casa, visita)
+
+#==========================================================#
+
+def ganador(casa, visita):
+
+    datosEquipos = getDatosEquipos(casa, visita)
+    
+    porcentajeCasa = calculoPorcentajeVictoria(datosEquipos[0][0][0][0])
+    porcentajeVisita = calculoPorcentajeVictoria(datosEquipos[1][0][0][1])
+
+    encuentrosGeneralCasa = calculoEncuentros(datosEquipos[0][0][3])
+    encuentrosGeneralVisita = calculoEncuentros(datosEquipos[1][0][3])
+
+    encuentrosRivalCasa = calculoEncuentros(datosEquipos[0][0][4])
+    encuentrosRivalVisita = calculoEncuentros(datosEquipos[1][0][4])
+
+    encuentrosCVCasa = calculoEncuentros(datosEquipos[0][0][5])
+    encuentrosCVVisita = calculoEncuentros(datosEquipos[1][0][5])
+
+    ganadorVictoria = diferencialVictoria(porcentajeCasa, porcentajeVisita)
+
+    ganadorRating = diferencialEstadistica(datosEquipos[0][0][1], datosEquipos[1][0][1])
+    ganadorPuntos = diferencialEstadistica(datosEquipos[0][0][2], datosEquipos[1][0][2])
+
+    ganadorEncuentrosGeneral = diferencialEncuentros(encuentrosGeneralCasa, encuentrosGeneralVisita)
+    ganadorEncuentrosRival = diferencialEncuentros(encuentrosRivalCasa, encuentrosRivalVisita)
+    ganadorEncuentrosCV = diferencialEncuentros(encuentrosCVCasa, encuentrosCVVisita)
+
+    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival, ganadorEncuentrosCV
+
+    ponderacionCasa = 0
+    ponderacionVisita = 0
+    
+    for ganador in ganadores:
+
+        ponderacionCasa += ganador[0]
+        ponderacionVisita += ganador[1]
+
+    if ponderacionCasa > ponderacionVisita:
+
+        return casa
+    
+    elif ponderacionCasa < ponderacionVisita:
+
+        return visita
+    
+    else:
+
+        return 'Empate'
+
+#==========================================================#
+
+print(ganador('Washington Wizards', 'Charlotte Hornets'))
+print(ganador('New Orleans Pelicans', 'Philadelphia 76ers'))
+print(ganador('Minnesota Timberwolves', 'Cleveland Cavaliers'))
+print(ganador('Orlando Magic', 'New York Knicks'))
+print(ganador('Atlanta Hawks', 'Memphis Grizzlies'))
+print(ganador('Miami Heat', 'Oklahoma City Thunder'))
+print(ganador('Milwaukee Bucks', 'Los Angeles Lakers'))
+print(ganador('Houston Rockets', 'Portland Trail Blazers'))
