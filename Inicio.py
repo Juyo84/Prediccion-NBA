@@ -1,4 +1,5 @@
 import DatosEquipo as Datos
+from datetime import datetime
 
 def getDatosEquipos(equipoCasa, equipoVisita):
 
@@ -90,6 +91,20 @@ def calculoPorcentajeVictoria(recordEquipo):
     porcentajeVictoria = (int(victorias) * 100) / (int(victorias) + int(derrotas))
 
     return porcentajeVictoria
+
+#==========================================================#
+
+def calculoDescansos(fechasEquipo):
+
+    descansos = []
+
+    for i in range(4):
+
+        fechaActual = datetime.strptime(fechasEquipo[i], "%Y-%m-%d")
+        fechaSiguiente = datetime.strptime(fechasEquipo[i + 1], "%Y-%m-%d")
+        descansos.append((fechaActual - fechaSiguiente).days)
+
+    return descansos
 
 #==========================================================#
 
@@ -263,6 +278,22 @@ def diferencialEncuentros(encuentrosCasa, encuentrosVisita):
 
 #==========================================================#
 
+def diferencialDescansos(descansosCasa, descansosVisita):
+
+    for i in range(len(descansosCasa)):
+
+        if descansosCasa[i] > descansosVisita[i]:
+
+            return (2, 0)
+        
+        elif descansosCasa[i] < descansosVisita[i]:
+
+            return (0, 2)
+    
+    return (0, 0)
+
+#==========================================================#
+
 def ganador(casa, visita):
 
     datosEquipos = getDatosEquipos(casa, visita)
@@ -279,6 +310,9 @@ def ganador(casa, visita):
     encuentrosCVCasa = calculoEncuentros(datosEquipos[0][0][5])
     encuentrosCVVisita = calculoEncuentros(datosEquipos[1][0][5])
 
+    descansosCasa = calculoDescansos(datosEquipos[0][0][6])
+    descansosVisita = calculoDescansos(datosEquipos[1][0][6])
+    
     ganadorVictoria = diferencialVictoria(porcentajeCasa, porcentajeVisita)
 
     ganadorRating = diferencialEstadistica(datosEquipos[0][0][1], datosEquipos[1][0][1])
@@ -288,7 +322,9 @@ def ganador(casa, visita):
     ganadorEncuentrosRival = diferencialEncuentros(encuentrosRivalCasa, encuentrosRivalVisita)
     ganadorEncuentrosCV = diferencialEncuentros(encuentrosCVCasa, encuentrosCVVisita)
 
-    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival, ganadorEncuentrosCV
+    ganadorDescanso = diferencialDescansos(descansosCasa, descansosVisita)
+    
+    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival, ganadorEncuentrosCV, ganadorDescanso
 
     ponderacionCasa = 0
     ponderacionVisita = 0
@@ -312,11 +348,10 @@ def ganador(casa, visita):
 
 #==========================================================#
 
-print(ganador('Washington Wizards', 'Charlotte Hornets'))
-print(ganador('New Orleans Pelicans', 'Philadelphia 76ers'))
-print(ganador('Minnesota Timberwolves', 'Cleveland Cavaliers'))
-print(ganador('Orlando Magic', 'New York Knicks'))
-print(ganador('Atlanta Hawks', 'Memphis Grizzlies'))
-print(ganador('Miami Heat', 'Oklahoma City Thunder'))
-print(ganador('Milwaukee Bucks', 'Los Angeles Lakers'))
-print(ganador('Houston Rockets', 'Portland Trail Blazers'))
+print(ganador('Los Angeles Clippers', 'Chicago Bulls'))
+print(ganador('Detroit Pistons', 'Dallas Mavericks'))
+print(ganador('Charlotte Hornets', 'Brooklyn Nets'))
+print(ganador('Golden State Warriors', 'San Antonio Spurs'))
+print(ganador('Phoenix Suns', 'Boston Celtics'))
+print(ganador('Denver Nuggets', 'Utah Jazz'))
+print(ganador('Portland Trail Blazers', 'Toronto Raptors'))

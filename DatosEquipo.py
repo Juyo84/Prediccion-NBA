@@ -205,6 +205,28 @@ def getEncuentrosCV(response, lugar):
 
 #==========================================================#
 
+def getfechaEncuentros(response):
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    tablaDescansos = soup.find('table').find('tbody')
+    numEncuentro = 0
+    fechaPartido = []
+
+    #REGISTRA FECHA DE LOS ULT. 5 ENCUENTROS
+    for fila in reversed(tablaDescansos.find_all('tr')):
+            
+        if fila.find('th').text != 'Rk' and fila.find('th').text != '':
+                
+            fechaPartido.append(fila.find_all('td')[1].text)
+            numEncuentro = numEncuentro + 1
+
+        if numEncuentro >= 5:
+            
+            return fechaPartido
+
+#==========================================================#
+
 def getClasificacionCBS():
 
     url = 'https://www.cbssports.com/nba/standings/'
@@ -329,6 +351,7 @@ def setDatosEquipo(equipo, rival, lugar):
             RESULTADOS ULT. 5 ENCUENTROS
             RESULTADOS DE ANTERIORES ENCUENTROS CON EL RIVAL
             RESULTADOS ULT. 5 ENCUENTROS DEPENDIENDO C/V
+            FECHA ULT. 5 ENCUENTROS
         """
 
         datosEquipo.append([
@@ -337,14 +360,16 @@ def setDatosEquipo(equipo, rival, lugar):
             getPuntos(equipo, responseClasificacion),
             getEncuentrosGeneral(responsePartidos),
             getEncuentrosRival(siglasRival, responsePartidos),
-            getEncuentrosCV(responsePartidos, busqueda)
+            getEncuentrosCV(responsePartidos, busqueda),
+            getfechaEncuentros(responsePartidos)
                             ])
 
         return datosEquipo
     
     else:
-
+        
         return setDatosEquipo(equipo, rival, lugar)
+
 
 
 
