@@ -374,6 +374,7 @@ def setDatosEquipo(equipo, rival, lugar):
 
 
 
+
 """ SIN DECIDIR
 def getJugadores(equipo):
 

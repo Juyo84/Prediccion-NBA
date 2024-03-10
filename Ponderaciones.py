@@ -347,11 +347,3 @@ def ganador(casa, visita):
         return 'Empate'
 
 #==========================================================#
-
-print(ganador('Los Angeles Clippers', 'Chicago Bulls'))
-print(ganador('Detroit Pistons', 'Dallas Mavericks'))
-print(ganador('Charlotte Hornets', 'Brooklyn Nets'))
-print(ganador('Golden State Warriors', 'San Antonio Spurs'))
-print(ganador('Phoenix Suns', 'Boston Celtics'))
-print(ganador('Denver Nuggets', 'Utah Jazz'))
-print(ganador('Portland Trail Blazers', 'Toronto Raptors'))
