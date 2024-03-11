@@ -294,7 +294,54 @@ def diferencialDescansos(descansosCasa, descansosVisita):
 
 #==========================================================#
 
-def ganador(casa, visita):
+def ganadorV1(casa, visita):
+
+    datosEquipos = getDatosEquipos(casa, visita)
+    
+    porcentajeCasa = calculoPorcentajeVictoria(datosEquipos[0][0][0][0])
+    porcentajeVisita = calculoPorcentajeVictoria(datosEquipos[1][0][0][1])
+
+    encuentrosGeneralCasa = calculoEncuentros(datosEquipos[0][0][3])
+    encuentrosGeneralVisita = calculoEncuentros(datosEquipos[1][0][3])
+
+    encuentrosRivalCasa = calculoEncuentros(datosEquipos[0][0][4])
+    encuentrosRivalVisita = calculoEncuentros(datosEquipos[1][0][4])
+
+    encuentrosCVCasa = calculoEncuentros(datosEquipos[0][0][5])
+    encuentrosCVVisita = calculoEncuentros(datosEquipos[1][0][5])
+    
+    ganadorVictoria = diferencialVictoria(porcentajeCasa, porcentajeVisita)
+
+    ganadorRating = diferencialEstadistica(datosEquipos[0][0][1], datosEquipos[1][0][1])
+    ganadorPuntos = diferencialEstadistica(datosEquipos[0][0][2], datosEquipos[1][0][2])
+
+    ganadorEncuentrosGeneral = diferencialEncuentros(encuentrosGeneralCasa, encuentrosGeneralVisita)
+    ganadorEncuentrosRival = diferencialEncuentros(encuentrosRivalCasa, encuentrosRivalVisita)
+    ganadorEncuentrosCV = diferencialEncuentros(encuentrosCVCasa, encuentrosCVVisita)
+    
+    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival, ganadorEncuentrosCV
+
+    ponderacionCasa = 0
+    ponderacionVisita = 0
+    
+    for ganador in ganadores:
+
+        ponderacionCasa += ganador[0]
+        ponderacionVisita += ganador[1]
+
+    if ponderacionCasa > ponderacionVisita:
+
+        return casa
+    
+    elif ponderacionCasa < ponderacionVisita:
+
+        return visita
+    
+    else:
+
+        return 'Empate'
+
+def ganadorV2(casa, visita):
 
     datosEquipos = getDatosEquipos(casa, visita)
     
