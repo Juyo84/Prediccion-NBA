@@ -294,6 +294,22 @@ def diferencialDescansos(descansosCasa, descansosVisita):
 
 #==========================================================#
 
+def diferencialSimpleRating(SRCasa, SRVisita):
+
+    if SRCasa > SRVisita:
+
+        return (1, 0)
+    
+    elif SRCasa < SRVisita:
+
+        return (0, 1)
+    
+    else:
+        
+        return (0, 0)
+
+#==========================================================#
+
 def ganadorV1(casa, visita):
 
     datosEquipos = getDatosEquipos(casa, visita)
@@ -370,8 +386,10 @@ def ganadorV2(casa, visita):
     ganadorEncuentrosCV = diferencialEncuentros(encuentrosCVCasa, encuentrosCVVisita)
 
     ganadorDescanso = diferencialDescansos(descansosCasa, descansosVisita)
+
+    ganadorSimpleRating = diferencialSimpleRating(datosEquipos[0][0][7], datosEquipos[1][0][7])
     
-    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival, ganadorEncuentrosCV, ganadorDescanso
+    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival, ganadorEncuentrosCV, ganadorDescanso, ganadorSimpleRating
 
     ponderacionCasa = 0
     ponderacionVisita = 0

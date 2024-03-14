@@ -227,12 +227,52 @@ def getfechaEncuentros(response):
 
 #==========================================================#
 
+def getSimpleRating(equipo, response):
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    tablaSimpleRatingEste = soup.find_all('table')[0].find('tbody')
+    tablaSimpleRatingOeste = soup.find_all('table')[1].find('tbody')
+
+    #REGISTRA EL SIMPLE RATING SYSTEM
+    for filaEste in tablaSimpleRatingEste.find_all('tr'):
+
+        if filaEste.find_all('td')[0] != None:
+
+            if equipo == filaEste.find('th').find('a').text:
+                                
+                simpleRating = filaEste.find_all('td')[6].text
+
+                return (simpleRating)
+
+
+    for filaOeste in tablaSimpleRatingOeste.find_all('tr'):
+            
+        if filaOeste.find_all('td')[0] != None:
+
+            if equipo == filaOeste.find('th').find('a').text:
+                
+                simpleRating = filaOeste.find_all('td')[6].text
+
+                return (simpleRating)
+
+#==========================================================#
+
 def getClasificacionCBS():
 
     url = 'https://www.cbssports.com/nba/standings/'
     responseCBS = requests.get(url)
 
     return responseCBS
+
+#==========================================================#
+
+def getClasificacionBR():
+
+    url = 'https://www.basketball-reference.com/leagues/NBA_2024_standings.html'
+    responseBR = requests.get(url)
+
+    return responseBR
 
 #==========================================================#
 
@@ -339,29 +379,32 @@ def setDatosEquipo(equipo, rival, lugar):
 
         busqueda = ''
     
-    responseClasificacion = getClasificacionCBS()
+    responseClasificacionCBS = getClasificacionCBS()
+    responseClasificacionBR = getClasificacionBR()
     responsePartidos = getPartidosEquipo(siglasEquipo)
 
-    if responseClasificacion.status_code == 200 and responsePartidos.status_code == 200:
+    if responseClasificacionCBS.status_code == 200 and responseClasificacionBR.status_code == 200 and responsePartidos.status_code == 200:
 
         """
-            RECORD CASA Y VISITA
-            RATING OFENSIVO Y DEFENSIVO
-            PUNTOS A FAVOR, EN CONTRA Y DIFERENCIAL
-            RESULTADOS ULT. 5 ENCUENTROS
-            RESULTADOS DE ANTERIORES ENCUENTROS CON EL RIVAL
-            RESULTADOS ULT. 5 ENCUENTROS DEPENDIENDO C/V
-            FECHA ULT. 5 ENCUENTROS
+            0. RECORD CASA Y VISITA
+            1. RATING OFENSIVO Y DEFENSIVO
+            2. PUNTOS A FAVOR, EN CONTRA Y DIFERENCIAL
+            3. RESULTADOS ULT. 5 ENCUENTROS
+            4. RESULTADOS DE ANTERIORES ENCUENTROS CON EL RIVAL
+            5. RESULTADOS ULT. 5 ENCUENTROS DEPENDIENDO C/V
+            6. FECHA ULT. 5 ENCUENTROS
+            7. SIMPLE RATING SYSTEM
         """
 
         datosEquipo.append([
-            getRecord(equipo, responseClasificacion),
+            getRecord(equipo, responseClasificacionCBS),
             getRating(equipo),
-            getPuntos(equipo, responseClasificacion),
+            getPuntos(equipo, responseClasificacionCBS),
             getEncuentrosGeneral(responsePartidos),
             getEncuentrosRival(siglasRival, responsePartidos),
             getEncuentrosCV(responsePartidos, busqueda),
-            getfechaEncuentros(responsePartidos)
+            getfechaEncuentros(responsePartidos),
+            getSimpleRating(equipo, responseClasificacionBR)
                             ])
 
         return datosEquipo
