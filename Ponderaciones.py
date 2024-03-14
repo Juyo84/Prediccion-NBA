@@ -310,6 +310,32 @@ def diferencialSimpleRating(SRCasa, SRVisita):
 
 #==========================================================#
 
+def diferencialMargenVictoria(margenCasa, margenVisita):
+
+    casa = 0
+    visita = 0
+
+    if margenCasa[0] > margenVisita[0]:
+
+        casa += 1
+
+    elif margenCasa[0] < margenVisita[0]:
+
+        visita += 1
+
+
+    if margenCasa[1] > margenVisita[1]:
+
+        casa += 1
+
+    elif margenCasa[1] < margenVisita[1]:
+
+        visita += 1
+
+    return (casa, visita)
+
+#==========================================================#
+
 def ganadorV1(casa, visita):
 
     datosEquipos = getDatosEquipos(casa, visita)
@@ -335,7 +361,8 @@ def ganadorV1(casa, visita):
     ganadorEncuentrosRival = diferencialEncuentros(encuentrosRivalCasa, encuentrosRivalVisita)
     ganadorEncuentrosCV = diferencialEncuentros(encuentrosCVCasa, encuentrosCVVisita)
     
-    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival, ganadorEncuentrosCV
+    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival,
+    ganadorEncuentrosCV
 
     ponderacionCasa = 0
     ponderacionVisita = 0
@@ -388,8 +415,11 @@ def ganadorV2(casa, visita):
     ganadorDescanso = diferencialDescansos(descansosCasa, descansosVisita)
 
     ganadorSimpleRating = diferencialSimpleRating(datosEquipos[0][0][7], datosEquipos[1][0][7])
+
+    ganadorMargenVictoria = diferencialMargenVictoria(datosEquipos[0][0][8], datosEquipos[1][0][8])
     
-    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival, ganadorEncuentrosCV, ganadorDescanso, ganadorSimpleRating
+    ganadores = ganadorVictoria, ganadorRating, ganadorPuntos, ganadorEncuentrosGeneral, ganadorEncuentrosRival,
+    ganadorEncuentrosCV, ganadorDescanso, ganadorSimpleRating, ganadorMargenVictoria
 
     ponderacionCasa = 0
     ponderacionVisita = 0

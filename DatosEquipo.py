@@ -106,34 +106,25 @@ def getRecord(equipo, response):
 
 #==========================================================#
 
-def getRating(equipo):
+def getRating(equipo, response):
 
-    url = 'https://www.basketball-reference.com/leagues/NBA_2024_ratings.html'
-    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-    if response.status_code == 200:
+    tablaRating = soup.find('table').find('tbody')
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        tablaRating = soup.find('table').find('tbody')
-
-        #REGISTRA EL RATING OFENSIVO Y DEFENSIVO
-        for fila in tablaRating.find_all('tr'):
+    #REGISTRA EL RATING OFENSIVO Y DEFENSIVO
+    for fila in tablaRating.find_all('tr'):
             
-            if fila.find_all('td')[0] != None:
+        if fila.find_all('td')[0] != None:
 
-                if equipo == fila.find_all('td')[0].find('a').text:
+            if equipo == fila.find_all('td')[0].find('a').text:
                 
-                    ratingOfensivo = fila.find_all('td')[7].text
-                    ratingDefensivo = fila.find_all('td')[8].text
+                ratingOfensivo = fila.find_all('td')[7].text
+                ratingDefensivo = fila.find_all('td')[8].text
 
-        dataRating = ratingOfensivo, ratingDefensivo
+    dataRating = ratingOfensivo, ratingDefensivo
 
-        return dataRating
-    
-    else:
-
-        return getRating(equipo)
+    return dataRating
 
 #==========================================================#
 
@@ -258,6 +249,28 @@ def getSimpleRating(equipo, response):
 
 #==========================================================#
 
+def getMargenVictoria(equipo, response):
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    tablaRating = soup.find('table').find('tbody')
+
+    #REGISTRA EL MARGEN DE VICTORIA Y NET RATING
+    for fila in tablaRating.find_all('tr'):
+            
+        if fila.find_all('td')[0] != None:
+
+            if equipo == fila.find_all('td')[0].find('a').text:
+                
+                margenVictoria = fila.find_all('td')[6].text
+                netRating = fila.find_all('td')[9].text
+
+    dataMargen = margenVictoria, netRating
+
+    return dataMargen
+
+#==========================================================#
+
 def getClasificacionCBS():
 
     url = 'https://www.cbssports.com/nba/standings/'
@@ -273,6 +286,15 @@ def getClasificacionBR():
     responseBR = requests.get(url)
 
     return responseBR
+
+#==========================================================#
+
+def getRatings():
+
+    url = 'https://www.basketball-reference.com/leagues/NBA_2024_ratings.html'
+    responseRatings = requests.get(url)
+
+    return responseRatings
 
 #==========================================================#
 
@@ -382,8 +404,9 @@ def setDatosEquipo(equipo, rival, lugar):
     responseClasificacionCBS = getClasificacionCBS()
     responseClasificacionBR = getClasificacionBR()
     responsePartidos = getPartidosEquipo(siglasEquipo)
+    responseRatings = getRatings()
 
-    if responseClasificacionCBS.status_code == 200 and responseClasificacionBR.status_code == 200 and responsePartidos.status_code == 200:
+    if responseRatings.status_code == 200 and responseClasificacionCBS.status_code == 200 and responseClasificacionBR.status_code == 200 and responsePartidos.status_code == 200:
 
         """
             0. RECORD CASA Y VISITA
@@ -394,17 +417,19 @@ def setDatosEquipo(equipo, rival, lugar):
             5. RESULTADOS ULT. 5 ENCUENTROS DEPENDIENDO C/V
             6. FECHA ULT. 5 ENCUENTROS
             7. SIMPLE RATING SYSTEM
+            8. MARGEN DE VICTORIA Y NET RATING
         """
 
         datosEquipo.append([
             getRecord(equipo, responseClasificacionCBS),
-            getRating(equipo),
+            getRating(equipo, responseRatings),
             getPuntos(equipo, responseClasificacionCBS),
             getEncuentrosGeneral(responsePartidos),
             getEncuentrosRival(siglasRival, responsePartidos),
             getEncuentrosCV(responsePartidos, busqueda),
             getfechaEncuentros(responsePartidos),
-            getSimpleRating(equipo, responseClasificacionBR)
+            getSimpleRating(equipo, responseClasificacionBR),
+            getMargenVictoria(equipo, responseRatings)
                             ])
 
         return datosEquipo

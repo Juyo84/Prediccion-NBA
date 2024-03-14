@@ -19,7 +19,7 @@ def nombreEquipo(equipo):
             return equipoNBA
         
     return "NINGUNO"
-        
+
 #==========================================================#
 
 def prediccion():
