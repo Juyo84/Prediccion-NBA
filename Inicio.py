@@ -33,6 +33,13 @@ def prediccion():
         print("Equipo Casa:")
 
         equipoCasa = input()
+
+        if equipoCasa.lower() in "cancelar":
+
+            system("cls")
+            print("OPERACION CANCELADA")
+            return
+
         equipoCasa = nombreEquipo(equipoCasa)
         
     while equipoVisita == "NINGUNO":
@@ -41,6 +48,13 @@ def prediccion():
         print("Equipo Visita:")
 
         equipoVisita = input()
+
+        if equipoVisita.lower() in "cancelar":
+
+            system("cls")
+            print("OPERACION CANCELADA")
+            return
+
         equipoVisita = nombreEquipo(equipoVisita)
         
     system("cls")
@@ -73,7 +87,19 @@ def setResultado():
     system("cls")
     print("Fecha:")
 
+    fecha = ""
     fecha = input()
+
+    if fecha.lower() in "cancelar":
+
+        system("cls")
+        print("OPERACION CANCELADA")
+        return
+    
+    elif fecha.lower() in "hoy":
+
+        fecha = datetime.now()
+        fecha = fecha.strftime('%d/%m/%Y')
 
     while equipoCasa == "NINGUNO":
             
@@ -81,6 +107,13 @@ def setResultado():
         print("Equipo Casa:")
 
         equipoCasa = input()
+
+        if equipoCasa.lower() in "cancelar":
+
+            system("cls")
+            print("OPERACION CANCELADA")
+            return
+
         equipoCasa = nombreEquipo(equipoCasa)
         
     while equipoVisita == "NINGUNO":
@@ -89,6 +122,13 @@ def setResultado():
         print("Equipo Visita:")
 
         equipoVisita = input()
+
+        if equipoVisita.lower() in "cancelar":
+
+            system("cls")
+            print("OPERACION CANCELADA")
+            return
+
         equipoVisita = nombreEquipo(equipoVisita)
 
     while equipoGanador == "NINGUNO":
@@ -97,6 +137,13 @@ def setResultado():
         print("Equipo Ganador:")
 
         equipoGanador = input()
+
+        if equipoGanador.lower() in "cancelar":
+
+            system("cls")
+            print("OPERACION CANCELADA")
+            return
+
         equipoGanador = nombreEquipo(equipoGanador)
 
     system("cls")
